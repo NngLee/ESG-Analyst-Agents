@@ -1,34 +1,36 @@
-import requests
+from openai import OpenAI
 import os
+from dotenv import load_dotenv
 
-DEEPSEEK_API_KEY = os.getenv("DEEPSEEK_API_KEY") or "your-deepseek-api-key"
-API_URL = "https://api.deepseek.com/v1/chat/completions"
+# 加载 .env 文件中的 API 密钥（推荐）
+load_dotenv()
 
-HEADERS = {
-    "Authorization": f"Bearer {DEEPSEEK_API_KEY}",
-    "Content-Type": "application/json"
-}
+client = OpenAI(
+    api_key=os.getenv("DEEPSEEK_API_KEY"),
+    base_url="https://api.deepseek.com"
+)
 
 def query_deepseek_esg_score(disclosure_text, dimension="environment"):
+    """
+    用 DeepSeek GPT（通过 OpenAI SDK）分析 ESG 维度得分
+    """
     prompt = f"""
-你是一名专业的 ESG 分析师。请根据以下企业披露内容，从“{dimension}”维度给出评分（范围 0~1），仅返回一个浮点数：
+你是一位专业的 ESG 分析师。请根据以下企业披露内容，从“{dimension}”维度打分，分数为 0~1 之间的一个浮点数，仅返回该数值即可：
+
+企业披露如下：
 {disclosure_text}
     """.strip()
 
-    payload = {
-        "model": "deepseek-chat",
-        "messages": [
-            {"role": "system", "content": "你是一名专业的 ESG 分析师。"},
-            {"role": "user", "content": prompt}
-        ],
-        "temperature": 0.2
-    }
-
     try:
-        response = requests.post(API_URL, headers=HEADERS, json=payload)
-        response.raise_for_status()
-        reply = response.json()["choices"][0]["message"]["content"].strip()
-        return float(reply)
+        response = client.chat.completions.create(
+            model="deepseek-chat",
+            messages=[
+                {"role": "system", "content": "你是一位专业的 ESG 分析师"},
+                {"role": "user", "content": prompt}
+            ],
+            stream=False
+        )
+        return float(response.choices[0].message.content.strip())
     except Exception as e:
         print(f"[DeepSeek API Error] {e}")
         return 0.5
