@@ -7,7 +7,7 @@ from tools import (
 
 class ESGDimensionAgent:
     """
-    ESG维度评分通用Agent基类：根据指定维度对披露内容打分。
+    ESG维度评分通用Agent基类:根据指定维度对披露内容打分。
     """
     def __init__(self, model, dimension: str, score_key: str):
         self.model = model
@@ -20,7 +20,7 @@ class ESGDimensionAgent:
             try:
                 score = query_esg_score(disclosure, self.dimension)
             except Exception as e:
-                print(f"[警告] ESG评分接口异常（维度: {self.dimension}）：{e}")
+                print(f"[警告] ESG评分接口异常(维度: {self.dimension}):{e}")
                 score = 50.0  # 出现异常时给一个中等默认分
             self.model.assign_score(firm, self.score_key, score)
 
@@ -41,7 +41,7 @@ class GovernanceAgent(ESGDimensionAgent):
 
 class FirmAgent:
     """
-    企业Agent：负责检索企业披露信息，并将其提交给ESG评分Agents。
+    企业Agent:负责检索企业披露信息,并将其提交给ESG评分Agents。
     """
     def __init__(self, unique_id, model, firm_name=None, ticker=None, cik=None, city=None, country_code=None):
         self.unique_id = unique_id
@@ -59,9 +59,9 @@ class FirmAgent:
 
     def fetch_base_disclosure(self) -> str:
         """
-        获取企业基本披露内容。此处可替换为实际的信息检索逻辑（如读取年报摘要等）。
+        获取企业基本披露内容。
         """
-        return f"{self.firm_name} 的最新ESG披露概况：环境管理、社会责任与公司治理情况摘要。"
+        return f"{self.firm_name} 的最新ESG披露概况:环境管理、社会责任与公司治理情况摘要。"
 
     def generate_disclosure(self) -> str:
         """
@@ -112,7 +112,7 @@ class FirmAgent:
 
     def step(self):
         """
-        企业Agent执行步骤：生成披露文本并提交给ESGModel进行评分。
+        企业Agent执行步骤:生成披露文本并提交给ESGModel进行评分。
         """
         disclosure = self.generate_disclosure()
         # 提交披露内容给模型（模型会转发给各ESG评分Agent）

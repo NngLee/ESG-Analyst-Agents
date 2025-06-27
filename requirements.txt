@@ -5,3 +5,4 @@ yfinance
 alpha_vantage
 python-dotenv
 certifi
+PyQt6
