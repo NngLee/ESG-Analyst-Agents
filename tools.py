@@ -5,6 +5,7 @@ import wikipedia
 import yfinance as yf
 from alpha_vantage.timeseries import TimeSeries
 
+
 # 设置证书路径，防止HTTPS证书错误
 os.environ['SSL_CERT_FILE'] = certifi.where()
 

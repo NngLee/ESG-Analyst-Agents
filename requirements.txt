@@ -1,4 +1,7 @@
-python3 -m venv venv 
-source venv/bin/activate 
-pip install openai python-dotenv requests wikipedia yfinance alpha_vantage PyQt6
-
+openai
+requests
+wikipedia
+yfinance
+alpha_vantage
+python-dotenv
+certifi

@@ -7,7 +7,6 @@ def resolve_company(term: str):
     """
     根据用户输入的名称或代码，推断股票代码和公司正式名称。
     返回元组 (name, ticker, city, country, cik)。
-    此处简化逻辑：实际可结合数据库或API获取更准确信息。
     """
     term = term.strip()
     # 简单判断输入类型
@@ -94,7 +93,6 @@ def main():
     print(f"社会得分: {scores.get('soc', 0):.2f}")
     print(f"治理得分: {scores.get('gov', 0):.2f}")
     print(f"综合ESG得分: {scores.get('esg_score', 0):.2f}，评级: {scores.get('esg_rating', 'N/A')}")
-    print(f"模拟投资回报指数: {scores.get('investment_return', 1.0):.3f}")
     print("ESG综合评价与投资建议：")
     print(commentary if commentary else "无")
     

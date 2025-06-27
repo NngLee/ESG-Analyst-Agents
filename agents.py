@@ -120,16 +120,49 @@ class FirmAgent:
 
 class InvestorAgent:
     """
-    投资者Agent：根据ESG评分决定对企业的投资（模拟行为）。
+    投资者 Agent：根据 ESG 分析结果，结合四种策略（负面筛选、正面筛选、ESG整合、影响力投资）判断是否投资。
     """
+
     def __init__(self, unique_id, model):
         self.unique_id = unique_id
         self.model = model
 
     def step(self):
-        # 简单投资逻辑：若企业综合ESG评分>70，则投资一定金额
-        scores = self.model.get_firm_scores()
-        for firm, score_dict in scores.items():
-            if score_dict.get("esg_score", 0) > 70:
-                # 平均分配投资额100（模拟），实际应用中可用更复杂逻辑
-                firm.investment_received += 100.0 / len(self.model.firms)
+        firm_scores = self.model.get_firm_scores()
+        for firm, score_data in firm_scores.items():
+            esg_score = score_data["esg_score"]
+            rating = score_data["esg_rating"]
+            disclosure = self.model.current_disclosures.get(firm, "")
+
+            # 策略 1：负面筛选（Negative Screening）
+            exclusion_keywords = ["环境污染", "强迫劳动", "贿赂", "高碳排放", "道德风险"]
+            if any(keyword in disclosure for keyword in exclusion_keywords):
+                print(f"[拒绝投资] {firm.firm_name or firm.ticker}：触发负面筛选。")
+                continue
+
+            # 策略 2：正面筛选（Positive Screening）
+            if esg_score > 75:
+                firm.investment_received += 100.0
+                print(f"[优先投资] {firm.firm_name or firm.ticker}：高ESG得分（{esg_score:.2f}），正面筛选通过。")
+                continue
+
+            # 策略 3：ESG整合（ESG Integration）
+            weight_env = 0.4
+            weight_soc = 0.3
+            weight_gov = 0.3
+            integrated_score = (
+                score_data.get("environment", 50.0) * weight_env +
+                score_data.get("social", 50.0) * weight_soc +
+                score_data.get("governance", 50.0) * weight_gov
+            )
+
+            if integrated_score >= 65:
+                firm.investment_received += 50.0
+                print(f"[整合投资] {firm.firm_name or firm.ticker}：ESG综合得分良好（{integrated_score:.2f}）。")
+                continue
+
+            # 策略 4：影响力投资（Impact Investing）
+            impact_keywords = ["可再生能源", "碳中和", "乡村振兴", "教育普惠", "可持续发展"]
+            if any(keyword in disclosure for keyword in impact_keywords):
+                firm.investment_received += 30.0
+                print(f"[影响力投资] {firm.firm_name or firm.ticker}：业务涉及正面影响议题。")
