@@ -1,0 +1,11 @@
+def map_score_to_rating(score: float) -> str:
+    if score >= 90: return "A+"
+    elif score >= 85: return "A"
+    elif score >= 80: return "A-"
+    elif score >= 75: return "B+"
+    elif score >= 70: return "B"
+    elif score >= 65: return "B-"
+    elif score >= 60: return "C+"
+    elif score >= 50: return "C"
+    elif score >= 40: return "C-"
+    else: return "D"
