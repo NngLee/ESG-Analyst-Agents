@@ -85,12 +85,12 @@ class ESGApp(QWidget):
         self.eval_output = QTextEdit()
         self.eval_output.setReadOnly(True)
         self.eval_output.setPlaceholderText("【ESG评价】")
-        self.eval_output.setStyleSheet("font-size: 14px; background-color: rgba(255, 255, 255, 180);")
+        self.eval_output.setStyleSheet("font-size: 14px; color: black; background-color: rgba(255, 255, 255, 180);")
 
         self.advice_output = QTextEdit()
         self.advice_output.setReadOnly(True)
         self.advice_output.setPlaceholderText("【投资建议】")
-        self.advice_output.setStyleSheet("font-size: 14px; background-color: rgba(255, 255, 255, 180);")
+        self.advice_output.setStyleSheet("font-size: 14px; color: black; background-color: rgba(255, 255, 255, 180);")
 
         text_layout = QVBoxLayout()
         text_layout.addWidget(QLabel("【ESG评价】"))
