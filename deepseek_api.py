@@ -1,6 +1,7 @@
 from openai import OpenAI
 import os
 from dotenv import load_dotenv
+import re
 load_dotenv()
 client = OpenAI(
     api_key=os.getenv("DEEPSEEK_API_KEY"),
@@ -29,8 +30,14 @@ def query_esg_score(text: str, dimension: str = "environment") -> float:
             ],
             stream=False
         )
-        score = float(response.choices[0].message.content.strip())
-        return max(0.0, min(100.0, score))
+        content = response.choices[0].message.content.strip()
+        # 提取第一个合法的浮点数（整数或小数）
+        match = re.search(r"\d+(\.\d+)?", content)
+        if match:
+            score = float(match.group())
+            return max(0.0, min(100.0, score))
+        else:
+            raise ValueError(f"未找到浮点数：{content}")
     except Exception as e:
         print(f"[DeepSeek ESG评分接口出错]：{e}")
         return 50.0
